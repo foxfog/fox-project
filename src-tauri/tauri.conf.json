@@ -1,0 +1,48 @@
+{
+	"build": {
+		"beforeDevCommand": "npm run dev",
+		"beforeBuildCommand": "npm run build",
+		"devPath": "http://localhost:1420",
+		"distDir": "../dist",
+		"withGlobalTauri": false
+	},
+	"package": {
+		"productName": "fox-project",
+		"version": "0.0.1"
+	},
+	"tauri": {
+		"allowlist": {
+			"all": true,
+			"window": {
+				"all": true
+			},
+			"shell": {
+				"all": true
+			},
+			"fs": {
+				"all": true,
+				"scope": ["$RESOURCE/*"]
+			}
+		},
+		"bundle": {
+			"active": true,
+			"targets": "all",
+			"identifier": "fox-project",
+			"icon": [
+				"./icons/icon.ico"
+			]
+		},
+		"security": {
+			"csp": null
+		},
+		"windows": [
+			{
+				"resizable": true,
+				"title": "Fox Project",
+				"width": 800,
+				"height": 600,
+				"decorations": true
+			}
+		]
+	}
+}

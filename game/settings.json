@@ -1,0 +1,14 @@
+{
+  "audio": {
+    "volume": 0.7
+  },
+  "controls": {
+    "keyboardLayout": "qwerty"
+  },
+  "general": {
+    "language": "ru"
+  },
+  "video": {
+    "fullscreen": false
+  }
+}
