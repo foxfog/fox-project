@@ -1,5 +1,6 @@
 <template>
 	<RouterView />
+	<BgMusic />
 </template>
 
 <script setup>
@@ -9,6 +10,15 @@
 
 	const fullscreen = settings.video.fullscreen;
 	appWindow.setFullscreen(fullscreen);
+</script>
+<script>
+	import BgMusic from "./components/BgMusic.vue"; // Изменьте путь на соответствующий
+
+	export default {
+		components: {
+			BgMusic,
+		},
+	};
 </script>
 
 <style lang="scss">
@@ -21,7 +31,7 @@
 
 		--colorBorder: color-mix(in srgb, var(--colorBaseOne), transparent 70%);
 
-		--colorPrimary: #CF8B06;
+		--colorPrimary: #cf8b06;
 		--colorSecondary: #11111F;
 		--colorAlter: #0061BA;
 

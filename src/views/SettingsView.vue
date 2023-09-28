@@ -35,6 +35,7 @@
 	import VideoSettings from '../settings/VideoSettings.vue'
 	import { invoke } from '@tauri-apps/api/tauri'
 	import settings from "../../game/settings.json"
+	import { mixinBgMusic } from "../mixins/mixinBgMusic";
 
 	export default {
 		components: {
@@ -48,7 +49,15 @@
 				activeTabIndex: 0,
 			};
 		},
+		mixins: [mixinBgMusic],
+		props: {
+			enableMusic: {
+				type: Boolean,
+				default: true,
+			},
+		},
 		methods: {
+
 			updateSettings(NewSettings) {
 				this.fullscreen = NewSettings
 			},

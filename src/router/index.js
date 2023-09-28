@@ -14,6 +14,7 @@ routes: [
 		id: 1,
 		name: 'newgame',
 		path: '/newgame',
+		component: () => import('../views/NewGame.vue')
 	},
 	{
 		id: 2,

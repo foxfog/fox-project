@@ -10,6 +10,20 @@
 	</div>
 </template>
 
-<script setup>
+<script>
 	import MainMenu from '../components/MainMenu.vue'
+	import { mixinBgMusic } from "../mixins/mixinBgMusic";
+	
+	export default {
+		components: {
+			MainMenu,
+		},
+		mixins: [mixinBgMusic],
+		props: {
+			enableMusic: {
+				type: Boolean,
+				default: true,
+			},
+		},
+	};
 </script>

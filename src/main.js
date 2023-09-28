@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import i18n from './translations'
 import uiCompontents from './components/UI'
+import store from './store'
 
 // Font Awesome
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -24,6 +25,7 @@ uiCompontents.forEach(uiComponent => {
 
 app.use(i18n)
 app.use(router)
+app.use(store)
 .component("font-awesome-icon", FontAwesomeIcon)
 
 app.mount('#app')

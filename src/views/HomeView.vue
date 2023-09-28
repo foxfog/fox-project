@@ -15,15 +15,23 @@
 <script>
 	import MainMenu from '../components/MainMenu.vue'
 	import SvgImage from '../components/SvgImage.vue'
+	import { mixinBgMusic } from "../mixins/mixinBgMusic";
 	
 	export default {
 		components: {
 			MainMenu,
 			SvgImage,
 		},
+		mixins: [mixinBgMusic],
+		props: {
+			enableMusic: {
+				type: Boolean,
+				default: true,
+			},
+		},
 	};
 </script>
 
-<style scss>
+<style lang="scss">
 	
 </style>
