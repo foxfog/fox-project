@@ -23,16 +23,8 @@
 		value: sLocale,
 		label: languageNames[sLocale],
 	}));
-
 </script>
 
-<script>
-	export default {
-		components: {
-		},
-		
-	}
-</script>
 
 <style lang="scss" scoped>
 	

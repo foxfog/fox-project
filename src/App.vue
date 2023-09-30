@@ -1,6 +1,6 @@
 <template>
 	<RouterView />
-	<BgMusic />
+	<!--<BgMusic /> -->
 </template>
 
 <script setup>
@@ -12,11 +12,11 @@
 	appWindow.setFullscreen(fullscreen);
 </script>
 <script>
-	import BgMusic from "./components/BgMusic.vue"; // Изменьте путь на соответствующий
+	//import BgMusic from "./components/Sounds/BgMusic.vue";
 
 	export default {
 		components: {
-			BgMusic,
+			//BgMusic,
 		},
 	};
 </script>
@@ -32,6 +32,7 @@
 		--colorBorder: color-mix(in srgb, var(--colorBaseOne), transparent 70%);
 
 		--colorPrimary: #cf8b06;
+		--colorPrimaryDark: #7f5707;
 		--colorSecondary: #11111F;
 		--colorAlter: #0061BA;
 
@@ -47,6 +48,7 @@
 	* {
 		box-sizing: border-box;
 		user-select: none;
+		cursor: default;
 	}
 	html {
 		font-family: var(--fontPrimary);
@@ -206,7 +208,7 @@
 			}
 		}
 		.ui-tabs-content {
-			padding: 2rem;
+			padding-top: 2rem;
 			.ui-tab {
 				&:not(.__active) {
 					display: none;

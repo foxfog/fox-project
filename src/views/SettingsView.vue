@@ -16,7 +16,7 @@
 						<VideoSettings v-on:set-fullscreen-data="updateSettings" />
 					</div>
 					<div class="ui-tab" :class="{ '__active': activeTabIndex === 2 }">
-						3
+						<AudioSettings />
 					</div>
 				</div>
 			</div>
@@ -30,18 +30,20 @@
 </template>
 
 <script>
-	import MainMenu from '../components/MainMenu.vue'
-	import GeneralSettings from '../settings/GeneralSettings.vue'
-	import VideoSettings from '../settings/VideoSettings.vue'
+	import MainMenu from '@/components/MainMenu.vue'
+	import GeneralSettings from '@/settings/GeneralSettings.vue'
+	import VideoSettings from '@/settings/VideoSettings.vue'
+	import AudioSettings from '@/settings/AudioSettings.vue'
 	import { invoke } from '@tauri-apps/api/tauri'
 	import settings from "../../game/settings.json"
-	import { mixinBgMusic } from "../mixins/mixinBgMusic";
+	import { mixinBgMusic } from "@/mixins/mixinBgMusic"
 
 	export default {
 		components: {
 			MainMenu,
 			GeneralSettings,
-			VideoSettings
+			VideoSettings,
+			AudioSettings
 		},
 		data() {
 			return {
@@ -57,7 +59,6 @@
 			},
 		},
 		methods: {
-
 			updateSettings(NewSettings) {
 				this.fullscreen = NewSettings
 			},
@@ -75,7 +76,10 @@
 							fullscreen: this.fullscreen,
 						},
 						audio: {
-							volume: 0.7,
+							commonVolume: this.$store.state.soundSettings.commonVolume,
+							musicVolume: this.$store.state.soundSettings.musicVolume,
+							soundVolume: this.$store.state.soundSettings.soundVolume,
+							voiceVolume: this.$store.state.soundSettings.voiceVolume,
 						},
 						controls: {
 							keyboardLayout: "qwerty",
@@ -90,33 +94,36 @@
 				} catch (error) {
 					console.error("Ошибка при сохранении файла:", error);
 				}
-				},
-				async resetToDefoult() {
-					try {
-						const data = {
-							general: {
-								language: "ru",
-							},
-							video: {
-								fullscreen: false,
-							},
-							audio: {
-								volume: 0.7,
-							},
-							controls: {
-								keyboardLayout: "qwerty",
-							},
-						};
-						const response = await invoke("save_to_file", { data });
-						if (response) {
-							console.log("Файл успешно сохранен");
-						} else {
-							console.error("Не удалось сохранить файл");
-						}
-					} catch (error) {
-						console.error("Ошибка при сохранении файла:", error);
+			},
+			async resetToDefoult() {
+				try {
+					const data = {
+						general: {
+							language: "ru",
+						},
+						video: {
+							fullscreen: false,
+						},
+						audio: {
+							commonVolume: 100,
+							musicVolume: 100,
+							soundVolume: 100,
+							voiceVolume: 100,
+						},
+						controls: {
+							keyboardLayout: "qwerty",
+						},
+					};
+					const response = await invoke("save_to_file", { data });
+					if (response) {
+						console.log("Файл успешно сохранен");
+					} else {
+						console.error("Не удалось сохранить файл");
 					}
-				},
+				} catch (error) {
+					console.error("Ошибка при сохранении файла:", error);
+				}
+			},
 		}
 	}
 </script>
@@ -124,8 +131,29 @@
 <style lang="scss">
 	.settings-item {
 		display: flex;
+		&:not(:first-child) {
+			padding-top: 1em;
+		}
+		&:not(:last-child) {
+			padding-bottom: 1em;
+			border-bottom: 1px solid var(--colorBorder);
+		}
 	}
 	.settings-item__label {
-		width: 150px;
+		flex: 1;
+		min-width: 150px;
+	}
+	.settings-item__option {
+		flex: 1;
+		display: flex;
+		align-items: center;
+		column-gap: 1em;
+		.ui-range {
+			width: 100%;
+		}
+	}
+	.settings-item__value {
+		flex: none;
+		width: 4em;
 	}
 </style>
