@@ -28,6 +28,9 @@
 			value: {
 				type: Number,
 				default: 0,
+				validator(value) {
+					return !isNaN(parseFloat(value)) && isFinite(value);
+				}
 			},
 			dot: {
 				type: Boolean,
@@ -73,10 +76,12 @@
 				const rect = this.$el.getBoundingClientRect();
 				const x = event.clientX - rect.left;
 				const percent = (x / rect.width) * 100;
+				const stepDecimalPlaces = this.step.toString().split('.')[1]?.length || 0;
 		
 				if (percent >= 0 && percent <= 100) {
+
 					const rawValue = this.minValue + (percent / 100) * (this.maxValue - this.minValue);
-					this.localValue = Math.round(rawValue / this.step) * this.step;
+					this.localValue = parseFloat((Math.round(rawValue / this.step) * this.step).toFixed(stepDecimalPlaces));
 				}
 			},
 		},
@@ -86,7 +91,7 @@
 <style lang="scss" scoped>
 	.ui-range {
 		--uiRangeHeight: 0.625em;
-		--uiRangeDotWidth: var(--uiRangeHeight);
+		--uiRangeDotWidth: 1em;
 		--uiRangeBorderWidth: 1px;
 		font-size: 1rem;
 		width: 100px;
@@ -110,10 +115,11 @@
 		}
 		.ui-range-dot {
 			width: var(--uiRangeDotWidth);
-			height: var(--uiRangeHeight);
+			height: var(--uiRangeDotWidth);
 			background-color: var(--colorPrimary);
 			border-radius: 50%;
 			position: absolute;
+			top: calc(0px - ((var(--uiRangeDotWidth) - var(--uiRangeHeight)) / 2));
 			translate: calc(-.5 * var(--uiRangeDotWidth));
 		}
 		&:has(.ui-range-dot) {

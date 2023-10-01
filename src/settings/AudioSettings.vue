@@ -6,6 +6,9 @@
 			<div class="settings-item__value">{{ volumeItem.value }}</div>
 		</div>
 	</div>
+	<div class="settings-item">
+		<ui-player-audio :audio-path="'../../game/audio/music/Called_Upon.ogg'" :audioType="'music'"></ui-player-audio>
+	</div>
 </template>
   
 <script>
@@ -25,27 +28,27 @@
 			},
 		},
 		data() {
-		return {
-			volumeItems: [
-				{
-					name: 'commonVolume',
-					label: 'Общая громкость',
-				},
-				{
-					name: 'musicVolume',
-					label: 'Музыка',
-					dot: false,
-				},
-				{
-					name: 'soundVolume',
-					label: 'Звуки',
-				},
-				{
-					name: 'voiceVolume',
-					label: 'Голоса',
-				},
-			],
-		};
+			return {
+				volumeItems: [
+					{
+						name: 'commonVolume',
+						label: 'Общая громкость',
+					},
+					{
+						name: 'musicVolume',
+						label: 'Музыка',
+						dot: false,
+					},
+					{
+						name: 'soundVolume',
+						label: 'Звуки',
+					},
+					{
+						name: 'voiceVolume',
+						label: 'Голоса',
+					},
+				],
+			};
 		},
 		watch: {
 			soundSettings: {

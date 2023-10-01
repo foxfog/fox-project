@@ -1,9 +1,9 @@
 {
   "audio": {
-    "commonVolume": 87,
-    "musicVolume": 16,
-    "soundVolume": 49,
-    "voiceVolume": 72
+    "commonVolume": 93,
+    "musicVolume": 57,
+    "soundVolume": 66,
+    "voiceVolume": 37
   },
   "controls": {
     "keyboardLayout": "qwerty"
