@@ -154,6 +154,8 @@
 	}
 	.settings-item__value {
 		flex: none;
-		width: 4em;
+		&.__audio {
+			width: 1em;
+		}
 	}
 </style>

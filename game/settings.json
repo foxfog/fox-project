@@ -1,7 +1,7 @@
 {
   "audio": {
-    "commonVolume": 93,
-    "musicVolume": 57,
+    "commonVolume": 50,
+    "musicVolume": 50,
     "soundVolume": 66,
     "voiceVolume": 37
   },

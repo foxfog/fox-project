@@ -33,7 +33,7 @@
 
 		--colorPrimary: #cf8b06;
 		--colorPrimaryDark: #7f5707;
-		--colorSecondary: #11111F;
+		--colorSecondary: #222247;
 		--colorAlter: #0061BA;
 
 		--fontPrimary: 'Advent Pro', sans-serif;

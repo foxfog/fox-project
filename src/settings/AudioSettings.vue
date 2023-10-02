@@ -3,11 +3,17 @@
 		<div class="settings-item__label">{{ volumeItem.label }}:</div>
 		<div class="settings-item__option">
 			<ui-range :dot="volumeItem.dot" :value="volumeItem.value" @input="handleVolumeChange(volumeItem.name, $event)" />
-			<div class="settings-item__value">{{ volumeItem.value }}</div>
+			<div class="settings-item__value __audio">{{ volumeItem.value }}</div>
+			<div class="settings-item__sound">
+				<ui-player-audio :audio-path="volumeItem.path" :audioType="volumeItem.type" :audioLook="2" />
+			</div>
 		</div>
 	</div>
 	<div class="settings-item">
 		<ui-player-audio :audio-path="'../../game/audio/music/Called_Upon.ogg'" :audioType="'music'"></ui-player-audio>
+	</div>
+	<div class="settings-item">
+		<ui-player-audio :audio-path="'../../game/audio/music/Called_Upon.ogg'" :audioType="'music'" :audioLook="2"></ui-player-audio>
 	</div>
 </template>
   
@@ -32,20 +38,28 @@
 				volumeItems: [
 					{
 						name: 'commonVolume',
+						type: 'common',
 						label: 'Общая громкость',
+						path: '../../game/audio/music/Called_Upon.ogg',
 					},
 					{
 						name: 'musicVolume',
+						type: 'music',
 						label: 'Музыка',
+						path: '../../game/audio/music/Called_Upon.ogg',
 						dot: false,
 					},
 					{
 						name: 'soundVolume',
+						type: 'sound',
 						label: 'Звуки',
+						path: '../../game/audio/music/Called_Upon.ogg',
 					},
 					{
 						name: 'voiceVolume',
+						type: 'voice',
 						label: 'Голоса',
+						path: '../../game/audio/music/Called_Upon.ogg',
 					},
 				],
 			};
