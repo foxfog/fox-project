@@ -9,12 +9,6 @@
 			</div>
 		</div>
 	</div>
-	<div class="settings-item">
-		<ui-player-audio :audio-path="'../../game/audio/music/Called_Upon.ogg'" :audioType="'music'"></ui-player-audio>
-	</div>
-	<div class="settings-item">
-		<ui-player-audio :audio-path="'../../game/audio/music/Called_Upon.ogg'" :audioType="'music'" :audioLook="2"></ui-player-audio>
-	</div>
 </template>
   
 <script>

@@ -40,7 +40,7 @@ export default {
 		}
 	},
 	setup() {
-		const routeNames = ['home', 'newgame', 'load', 'settings', 'about'];
+		const routeNames = ['home', 'newgame', 'load', 'settings', 'about' , 'test'];
 
 		const { t } = useI18n();
 

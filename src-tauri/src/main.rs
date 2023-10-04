@@ -16,9 +16,46 @@ fn save_to_file(data: serde_json::Value) -> Result<bool, String> {
     Ok(true)
 }
 
+use std::fs;
+use std::path::{Path, PathBuf};
+
+#[derive(serde::Deserialize)]
+struct ListFilesArgs {
+    folder_path: String,
+}
+
+fn list_files_recursive(dir_path: &Path, file_names: &mut Vec<String>) -> Result<(), String> {
+    for entry in fs::read_dir(dir_path).map_err(|e| e.to_string())? {
+        let entry = entry.map_err(|e| e.to_string())?;
+        let path = entry.path();
+        if path.is_dir() {
+            list_files_recursive(&path, file_names)?;
+        } else {
+            if let Some(file_name) = path.to_str() {
+                file_names.push(file_name.to_string());
+            }
+        }
+    }
+    Ok(())
+}
+
+#[tauri::command]
+fn list_files(args: ListFilesArgs) -> Result<Vec<String>, String> {
+    let dir_path = Path::new(&args.folder_path);
+    let mut file_names = Vec::new();
+    if dir_path.is_dir() {
+        if let Err(error) = list_files_recursive(dir_path, &mut file_names) {
+            return Err(error);
+        }
+    } else {
+        return Err("Provided path is not a directory.".to_string());
+    }
+    Ok(file_names)
+}
+
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![save_to_file])
+        .invoke_handler(tauri::generate_handler![list_files, save_to_file])
         .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .expect("failed to run app");
 }
