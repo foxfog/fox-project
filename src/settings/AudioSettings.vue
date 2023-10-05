@@ -5,7 +5,13 @@
 			<ui-range :dot="volumeItem.dot" :value="volumeItem.value" @input="handleVolumeChange(volumeItem.name, $event)" />
 			<div class="settings-item__value __audio">{{ volumeItem.value }}</div>
 			<div class="settings-item__sound">
-				<ui-player-audio :audio-path="volumeItem.path" :audioType="volumeItem.type" :audioLook="2" />
+				<ui-player-audio
+					:audio-path="volumeItem.randomTandemFile"
+					:audioType="volumeItem.type"
+					:audioLook="2"
+					@audio-ended="handleAudioEnded(volumeItem)"
+					@audio-paused="handleAudioEnded(volumeItem)"
+				/>
 			</div>
 		</div>
 	</div>
@@ -13,6 +19,7 @@
   
 <script>
 	import { mapState, mapMutations } from 'vuex'
+	import { invoke } from '@tauri-apps/api/tauri'
 	
 	export default {
 		computed: {
@@ -22,10 +29,29 @@
 			},
 		},
 		methods: {
-			...mapMutations(['toggleMusic']),
-			handleVolumeChange(name, newValue) {
-				this.$store.commit(`updateVolumeByName`, { name, newValue });
-			},
+		...mapMutations(['toggleMusic']),
+		handleVolumeChange(name, newValue) {
+			this.$store.commit(`updateVolumeByName`, { name, newValue });
+		},
+		async fetchFileNames(path) {
+			const result = await invoke('list_files', { args: { folder_path: path } });
+			return result.map((fileName) => ({ name: fileName.replace(/\\/g, '/'), count: 0 }));
+		},
+		async generateRandomTandemFile(volumeItem) {
+			const folderPath = volumeItem.path;
+			const fileNames = await this.fetchFileNames(folderPath);
+			if (fileNames.length > 0) {
+				const randomIndex = Math.floor(Math.random() * fileNames.length);
+				volumeItem.randomTandemFile = fileNames[randomIndex].name;
+		
+				fileNames[randomIndex].count += 1;
+			} else {
+				volumeItem.randomTandemFile = 'Ничего нет.';
+			}
+		},
+		handleAudioEnded(volumeItem) {
+			this.generateRandomTandemFile(volumeItem);
+		},
 		},
 		data() {
 			return {
@@ -34,37 +60,46 @@
 						name: 'commonVolume',
 						type: 'common',
 						label: 'Общая громкость',
-						path: '../../game/audio/music/Called_Upon.ogg',
+						path: '../game/audio/test',
+						randomTandemFile: '',
 					},
 					{
 						name: 'musicVolume',
 						type: 'music',
 						label: 'Музыка',
-						path: '../../game/audio/music/Called_Upon.ogg',
+						path: '../game/audio/test/music',
 						dot: false,
+						randomTandemFile: '',
 					},
 					{
 						name: 'soundVolume',
 						type: 'sound',
 						label: 'Звуки',
-						path: '../../game/audio/music/Called_Upon.ogg',
+						path: '../game/audio/test/sound',
+						randomTandemFile: '',
 					},
 					{
 						name: 'voiceVolume',
 						type: 'voice',
 						label: 'Голоса',
-						path: '../../game/audio/music/Called_Upon.ogg',
+						path: '../game/audio/test/voice',
+						randomTandemFile: '',
 					},
 				],
 			};
+		},
+		async mounted() {
+			for (const volumeItem of this.volumeItems) {
+				await this.generateRandomTandemFile(volumeItem);
+			}
 		},
 		watch: {
 			soundSettings: {
 				deep: true,
 				handler(newVal) {
-					this.volumeItems.forEach((item) => {
-						item.value = newVal[item.name];
-					});
+				this.volumeItems.forEach((item) => {
+					item.value = newVal[item.name];
+				});
 				},
 			},
 		},
@@ -75,9 +110,4 @@
 		},
 	};
 </script>
-  
-
-<style lang="scss" scoped>
-
-</style>
   

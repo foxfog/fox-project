@@ -86,6 +86,7 @@
 				const audioPlayer = this.$refs.audioPlayer;
 				if (this.isPlaying) {
 					audioPlayer.pause();
+					this.$emit("audio-paused");
 				} else {
 					audioPlayer.play();
 				}
@@ -93,6 +94,7 @@
 			},
 			handleAudioEnded() {
 				this.isPlaying = false;
+				this.$emit("audio-ended");
 			},
 			handleTimeUpdate() {
 				this.currentTime = this.$refs.audioPlayer.currentTime;

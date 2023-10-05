@@ -3,7 +3,6 @@
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
-
 fn save_to_file(data: serde_json::Value) -> Result<bool, String> {
     let file_path = "../game/settings.json";
 
@@ -17,7 +16,7 @@ fn save_to_file(data: serde_json::Value) -> Result<bool, String> {
 }
 
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 #[derive(serde::Deserialize)]
 struct ListFilesArgs {
