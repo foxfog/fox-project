@@ -11,10 +11,12 @@
 					:audioLook="2"
 					@audio-ended="handleAudioEnded(volumeItem)"
 					@audio-paused="handleAudioEnded(volumeItem)"
+					@audio-plays="handleAudioPlays"
 				/>
 			</div>
 		</div>
 	</div>
+	{{ $store.state.isMusicPlaying }}
 </template>
   
 <script>
@@ -29,30 +31,35 @@
 			},
 		},
 		methods: {
-		...mapMutations(['toggleMusic']),
-		handleVolumeChange(name, newValue) {
-			this.$store.commit(`updateVolumeByName`, { name, newValue });
+			...mapMutations(['toggleMusic']),
+			handleVolumeChange(name, newValue) {
+				this.$store.commit(`updateVolumeByName`, { name, newValue });
+			},
+			async fetchFileNames(path) {
+				const result = await invoke('list_files', { args: { folder_path: path } });
+				return result.map((fileName) => ({ name: fileName.replace(/\\/g, '/'), count: 0 }));
+			},
+			async generateRandomTandemFile(volumeItem) {
+				const folderPath = volumeItem.path;
+				const fileNames = await this.fetchFileNames(folderPath);
+				if (fileNames.length > 0) {
+					const randomIndex = Math.floor(Math.random() * fileNames.length);
+					volumeItem.randomTandemFile = fileNames[randomIndex].name;
+			
+					fileNames[randomIndex].count += 1;
+				} else {
+					volumeItem.randomTandemFile = 'Ничего нет.';
+				}
+			},
+			handleAudioEnded(volumeItem) {
+					this.generateRandomTandemFile(volumeItem);
+					this.$store.commit('toggleMusic');
+			},
+			handleAudioPlays() {
+				this.$store.commit('toggleMusic');
+			},
 		},
-		async fetchFileNames(path) {
-			const result = await invoke('list_files', { args: { folder_path: path } });
-			return result.map((fileName) => ({ name: fileName.replace(/\\/g, '/'), count: 0 }));
-		},
-		async generateRandomTandemFile(volumeItem) {
-			const folderPath = volumeItem.path;
-			const fileNames = await this.fetchFileNames(folderPath);
-			if (fileNames.length > 0) {
-				const randomIndex = Math.floor(Math.random() * fileNames.length);
-				volumeItem.randomTandemFile = fileNames[randomIndex].name;
 		
-				fileNames[randomIndex].count += 1;
-			} else {
-				volumeItem.randomTandemFile = 'Ничего нет.';
-			}
-		},
-		handleAudioEnded(volumeItem) {
-			this.generateRandomTandemFile(volumeItem);
-		},
-		},
 		data() {
 			return {
 				volumeItems: [

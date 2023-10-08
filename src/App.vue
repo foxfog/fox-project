@@ -1,6 +1,6 @@
 <template>
 	<RouterView />
-	<!--<BgMusic /> -->
+	<BgMusic />
 </template>
 
 <script setup>
@@ -12,11 +12,11 @@
 	appWindow.setFullscreen(fullscreen);
 </script>
 <script>
-	//import BgMusic from "./components/Sounds/BgMusic.vue";
+	import BgMusic from "./components/Sounds/BgMusic.vue";
 
 	export default {
 		components: {
-			//BgMusic,
+			BgMusic,
 		},
 	};
 </script>

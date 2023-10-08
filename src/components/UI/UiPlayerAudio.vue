@@ -89,6 +89,7 @@
 					this.$emit("audio-paused");
 				} else {
 					audioPlayer.play();
+					this.$emit("audio-plays");
 				}
 				this.isPlaying = !this.isPlaying;
 			},
