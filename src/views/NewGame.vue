@@ -25,7 +25,43 @@
 					</div>
 					<div class="ui-input-box">
 						<lable class="ui-input-lable">Вес</lable>
-						<input class="ui-input-text" type="number" min="45" max="140" value="45"/>
+						<input class="ui-input-text" type="number" min="150" max="230" value="150"/>
+					</div>
+				</div>
+				<div class="ui-input-row">
+					<div class="ui-input-box">
+						<lable class="ui-input-lable">Сила</lable>
+						<input class="ui-input-text" type="number" min="0" max="100" value="0"/>
+					</div>
+				</div>
+				<div class="ui-input-row">
+					<div class="ui-input-box">
+						<lable class="ui-input-lable">Выносливость</lable>
+						<input class="ui-input-text" type="number" min="0" max="100" value="0"/>
+					</div>
+				</div>
+				<div class="ui-input-row">
+					<div class="ui-input-box">
+						<lable class="ui-input-lable">Ловкость</lable>
+						<input class="ui-input-text" type="number" min="0" max="100" value="0"/>
+					</div>
+				</div>
+				<div class="ui-input-row">
+					<div class="ui-input-box">
+						<lable class="ui-input-lable">Интеллект</lable>
+						<input class="ui-input-text" type="number" min="0" max="100" value="0"/>
+					</div>
+				</div>
+				<div class="ui-input-row">
+					<div class="ui-input-box">
+						<lable class="ui-input-lable">Обаяние</lable>
+						<input class="ui-input-text" type="number" min="0" max="100" value="0"/>
+					</div>
+				</div>
+				<div class="ui-input-row">
+					<div class="ui-input-box">
+						<lable class="ui-input-lable">Стойкость</lable>
+						<input class="ui-input-text" type="number" min="0" max="100" value="0"/>
 					</div>
 				</div>
 			</div>
