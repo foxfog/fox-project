@@ -2,8 +2,8 @@ import { createI18n } from "vue-i18n"
 import pluralRules from "./rules/pluralization"
 import datetimeFormats from "./rules/datetime"
 import settings from "../../game/settings.json";
-import en from "../../game/translations/locales/en.json"
-import ru from "../../game/translations/locales/ru.json"
+import en from "./locales/en.json"
+import ru from "./locales/ru.json"
 
 const initialLocale = settings.general.language;
 

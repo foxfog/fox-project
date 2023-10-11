@@ -11,8 +11,8 @@
 </template>
 
 <script>
-	import MainMenu from '../components/MainMenu.vue'
-	import { mixinBgMusic } from "../mixins/mixinBgMusic";
+	import MainMenu from '@/components/MainMenu.vue'
+	import { mixinBgMusic } from "@/mixins/mixinBgMusic";
 	
 	export default {
 		components: {

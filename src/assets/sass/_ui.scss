@@ -1,0 +1,7 @@
+.ui-input-row {
+	display: flex;
+	.ui-input-box {
+		display: flex;
+		flex-direction: column;
+	}
+}

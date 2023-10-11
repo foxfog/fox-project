@@ -2,7 +2,7 @@
 	<div class="mainpage">
 		<div class="mainpage-back">
 			<div class="mainpage-logo logo">
-				<svg-image svgPath="../../game/UI/logo/logo.svg" class="logo-image"></svg-image>
+				<svg-image svgPath="../../game/images/logo/logo.svg" class="logo-image"></svg-image>
 				<div class="logo-name"><span class="logo-alttext">Fox</span> Project</div>
 			</div>
 		</div>
@@ -13,9 +13,9 @@
 	</div>
 </template>
 <script>
-	import MainMenu from '../components/MainMenu.vue'
-	import SvgImage from '../components/SvgImage.vue'
-	import { mixinBgMusic } from "../mixins/mixinBgMusic";
+	import MainMenu from '@/components/MainMenu.vue'
+	import SvgImage from '@/components/SvgImage.vue'
+	import { mixinBgMusic } from "@/mixins/mixinBgMusic";
 	
 	export default {
 		components: {

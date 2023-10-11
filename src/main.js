@@ -1,9 +1,9 @@
 import { createApp } from 'vue'
-import App from './App.vue'
-import router from './router'
-import i18n from './translations'
-import uiCompontents from './components/UI'
-import store from './store'
+import App from '@/App.vue'
+import router from '@/router'
+import i18n from '@/translations'
+import uiCompontents from '@/components/UI'
+import store from '@/store'
 
 // Font Awesome
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -15,7 +15,7 @@ import { fab } from "@fortawesome/free-brands-svg-icons";
 import { far } from "@fortawesome/free-regular-svg-icons";
 library.add(fas, far, fab);
 
-import '../game/UI/fonts/fonts.css'
+import '../game/fonts/fonts.css'
 
 const app = createApp(App)
 

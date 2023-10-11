@@ -24,7 +24,7 @@
 </template>
   
 <script>
-	import MainMenu from '../components/MainMenu.vue'
+	import MainMenu from '@/components/MainMenu.vue'
 	import { invoke } from '@tauri-apps/api/tauri'
 	
 	export default {
