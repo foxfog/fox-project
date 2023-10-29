@@ -75,9 +75,25 @@ fn list_folders(args: ListFoldersArgs) -> Result<Vec<String>, String> {
     Ok(folder_names)
 }
 
+#[derive(serde::Deserialize)]
+struct CreateFolderArgs {
+    folder_path: String,
+    folder_name: String,
+}
+#[tauri::command]
+fn create_folder(args: CreateFolderArgs) -> Result<(), String> {
+    let folder_path = Path::new(&args.folder_path);
+    let new_folder_path = folder_path.join(&args.folder_name);
+
+    match fs::create_dir(&new_folder_path) {
+        Ok(_) => Ok(()),
+        Err(err) => Err(err.to_string()),
+    }
+}
+
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![list_files, save_to_file, list_folders])
+        .invoke_handler(tauri::generate_handler![list_files, save_to_file, list_folders, create_folder])
         .run(tauri::generate_context!())
         .expect("failed to run app");
 }

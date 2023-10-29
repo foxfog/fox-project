@@ -218,6 +218,7 @@
 					const nextProfileName = `profile_${maxNumber + 1}`;
 					console.log("New folder:", nextProfileName);
 					
+					await invoke('create_folder', { args: { folder_path: this.folderPath, folder_name: nextProfileName } });
 				} catch (error) {
 					console.error("Error fetching folder names:", error);
 				}
