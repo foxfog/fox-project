@@ -1,0 +1,17 @@
+{
+  "audio": {
+    "commonVolume": 84,
+    "musicVolume": 1,
+    "soundVolume": 66,
+    "voiceVolume": 70
+  },
+  "controls": {
+    "keyboardLayout": "qwerty"
+  },
+  "general": {
+    "language": "ru"
+  },
+  "video": {
+    "fullscreen": false
+  }
+}

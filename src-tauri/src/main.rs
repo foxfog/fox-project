@@ -23,6 +23,7 @@ struct ListFilesArgs {
     folder_path: String,
 }
 
+
 fn list_files_recursive(dir_path: &Path, file_names: &mut Vec<String>) -> Result<(), String> {
     for entry in fs::read_dir(dir_path).map_err(|e| e.to_string())? {
         let entry = entry.map_err(|e| e.to_string())?;
@@ -51,10 +52,32 @@ fn list_files(args: ListFilesArgs) -> Result<Vec<String>, String> {
     }
     Ok(file_names)
 }
+#[derive(serde::Deserialize)]
+struct ListFoldersArgs {
+    folder_path: String,
+}
+#[tauri::command]
+fn list_folders(args: ListFoldersArgs) -> Result<Vec<String>, String> {
+    let dir_path = Path::new(&args.folder_path);
+    let mut folder_names = Vec::new();
+    if dir_path.is_dir() {
+        for entry in fs::read_dir(dir_path).map_err(|e| e.to_string())? {
+            let entry = entry.map_err(|e| e.to_string())?;
+            if entry.file_type().map_err(|e| e.to_string())?.is_dir() {
+                if let Some(folder_name) = entry.file_name().to_str() {
+                    folder_names.push(folder_name.to_string());
+                }
+            }
+        }
+    } else {
+        return Err("Provided path is not a directory.".to_string());
+    }
+    Ok(folder_names)
+}
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![list_files, save_to_file])
+        .invoke_handler(tauri::generate_handler![list_files, save_to_file, list_folders])
         .run(tauri::generate_context!())
         .expect("failed to run app");
 }

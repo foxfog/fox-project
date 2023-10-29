@@ -129,6 +129,7 @@
 <script>
 	import { mixinBgMusic } from "@/mixins/mixinBgMusic";
 	import playerData from "../../game/data/characters/player/characterData.json";
+	import { invoke } from '@tauri-apps/api/tauri';
 	
 	export default {
 		components: {
@@ -202,8 +203,24 @@
 			isInputsValid() {
 				return this.firstName.trim() !== "" && this.lastName.trim() !== "";
 			},
-			startGame() {
-				console.log('Информация о начале игры');
+			async startGame() {
+				try {
+					const result = await invoke('list_folders', { args: { folder_path: this.folderPath } });
+					this.folderNames = result;
+					console.log("Folder Names:", this.folderNames);
+
+					const folderNumbers = this.folderNames
+					.filter(folderName => /^profile_\d+$/.test(folderName))
+					.map(folderName => parseInt(folderName.replace('profile_', ''), 10));
+
+					const maxNumber = Math.max(...folderNumbers, 0);
+
+					const nextProfileName = `profile_${maxNumber + 1}`;
+					console.log("New folder:", nextProfileName);
+					
+				} catch (error) {
+					console.error("Error fetching folder names:", error);
+				}
 			},
 		},
 		created() {
