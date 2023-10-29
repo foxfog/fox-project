@@ -1,0 +1,47 @@
+.ui-select-wrapper {
+	position: relative;
+	&.open {
+		.ui-select-label {
+			.ui-select-icon {
+				rotate: 180deg;
+			}
+		}
+	}
+}
+.ui-select-list {
+	position: absolute;
+	z-index: 99;
+	top: calc(100% + 0.5em);
+	left: 0;
+	background: var(--colorBaseTwo);
+	border: 1px solid var(--colorBorder);
+	border-radius: var(--borderRadiusBig);
+	padding-top: 0.4em;
+	padding-bottom: 0.4em;
+	.ui-select-option {
+		padding: 0.4em 1em;
+		&:not(.__selected) {
+			&:hover {
+				color: var(--colorPrimary);
+			}
+		}
+		&.__selected {
+			background: var(--colorPrimary);
+			color: var(--colorBaseTwo);
+		}
+	}
+}
+.ui-select-label {
+	display: flex;
+	.ui-select-icon {
+		font-size: 0.7em;
+		display: flex;
+		align-items: center;
+		margin-left: 1em;
+		transition: 0.1s;
+		svg {
+			position: relative;
+			top: -0.2em;
+		}
+	}
+}

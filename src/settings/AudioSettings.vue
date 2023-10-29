@@ -2,21 +2,20 @@
 	<div v-for="(volumeItem, index) in volumeItems" :key="index" class="settings-item">
 		<div class="settings-item__label">{{ volumeItem.label }}:</div>
 		<div class="settings-item__option">
-			<ui-range :dot="volumeItem.dot" :value="volumeItem.value" @input="handleVolumeChange(volumeItem.name, $event)" />
+			<ui-range :dot="volumeItem.dot" v-model="volumeItem.value" />
 			<div class="settings-item__value __audio">{{ volumeItem.value }}</div>
 			<div class="settings-item__sound">
 				<ui-player-audio
-					:audio-path="volumeItem.randomTandemFile"
-					:audioType="volumeItem.type"
-					:audioLook="2"
-					@audio-ended="handleAudioEnded(volumeItem)"
-					@audio-paused="handleAudioEnded(volumeItem)"
-					@audio-plays="handleAudioPlays"
+				:audio-path="volumeItem.randomTandemFile"
+				:audioType="volumeItem.type"
+				:audioLook="2"
+				@audio-ended="handleAudioEnded(volumeItem)"
+				@audio-paused="handleAudioEnded(volumeItem)"
+				@audio-plays="handleAudioPlays"
 				/>
 			</div>
 		</div>
 	</div>
-	{{ $store.state.isMusicPlaying }}
 </template>
   
 <script>
@@ -98,17 +97,13 @@
 		async mounted() {
 			for (const volumeItem of this.volumeItems) {
 				await this.generateRandomTandemFile(volumeItem);
-			}
-		},
-		watch: {
-			soundSettings: {
-				deep: true,
-				handler(newVal) {
-				this.volumeItems.forEach((item) => {
-					item.value = newVal[item.name];
-				});
-				},
-			},
+				this.$watch(
+					() => volumeItem.value,
+					(newValue, oldValue) => {
+						this.$store.commit('updateVolumeByName', { name: volumeItem.name, newValue });
+					}
+				);
+				}
 		},
 		created() {
 			this.volumeItems.forEach((item) => {

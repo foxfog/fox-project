@@ -35,8 +35,7 @@ export default {
 	},
 	computed: {
 		filteredRouters() {
-		// Фильтруем маршруты, исключая "home" при текущем пути "/"
-		return this.routers.filter(route => !(route.name === 'home' && this.$route.path === '/'));
+			return this.routers.filter(route => !(route.name === 'home' && this.$route.path === '/'));
 		}
 	},
 	setup() {

@@ -1,0 +1,35 @@
+.character-card {
+	display: flex;
+	max-height: 100%;
+	overflow-y: auto;
+	column-gap: 5dvh;
+	.character__portret {
+		height: 100%;
+		border: 1px solid var(--colorBorder);
+		border-radius: 1dvh;
+		padding: 2dvh 4dvh;
+		overflow: hidden;
+		.character__portret-body {
+			filter: invert(1);
+		}
+	}
+}
+.character__portret {
+	position: relative;
+	.character__portret-size {
+		height: 100%;
+		position: relative;
+	}
+	.character__portret-body {
+		height: 100%;
+		width: auto;
+	}
+}
+.character-card__stats {
+	.ui-select-label,
+	.ui-input-numb,
+	.ui-input-text {
+		font-size: 2em;
+		color: var(--colorPrimary);
+	}
+}

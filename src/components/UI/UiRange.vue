@@ -2,7 +2,7 @@
 	<div class="ui-range" @mousedown="startDrag" @mousemove="handleDrag" @mouseup="endDrag" @click="handleClick">
 		<div class="ui-range-body">
 			<div class="ui-range-line">
-				<div class="ui-range-progress" :style="{ width: progress + '%'}"></div>
+				<div class="ui-range-progress" :style="{ width: progress + '%' }"></div>
 			</div>
 			<div v-if="dot" class="ui-range-dot" :style="{ left: progress + '%' }"></div>
 		</div>
@@ -17,20 +17,17 @@
 				type: Number,
 				default: 1,
 			},
-			minValue: {
+			min: {
 				type: Number,
 				default: 0,
 			},
-			maxValue: {
+			max: {
 				type: Number,
 				default: 100,
 			},
-			value: {
+			modelValue: {
 				type: Number,
 				default: 0,
-				validator(value) {
-					return !isNaN(parseFloat(value)) && isFinite(value);
-				}
 			},
 			dot: {
 				type: Boolean,
@@ -40,13 +37,18 @@
 		data() {
 			return {
 				dragging: false,
-				localValue: this.value,
+				localValue: this.modelValue,
 			};
 		},
 		computed: {
 			progress() {
-				return ((this.localValue - this.minValue) / (this.maxValue - this.minValue)) * 100;
-			}
+				return ((this.localValue - this.min) / (this.max - this.min)) * 100;
+			},
+		},
+		watch: {
+			modelValue(newValue) {
+				this.localValue = newValue;
+			},
 		},
 		methods: {
 			startDrag(event) {
@@ -57,8 +59,8 @@
 			},
 			handleDrag(event) {
 				if (this.dragging) {
-				this.updateValue(event);
-				this.$emit('input', this.localValue);
+					this.updateValue(event);
+					this.$emit('update:modelValue', this.localValue);
 				}
 			},
 			endDrag() {
@@ -69,7 +71,7 @@
 			handleClick(event) {
 				if (!this.dragging) {
 					this.updateValue(event);
-					this.$emit('input', this.localValue);
+					this.$emit('update:modelValue', this.localValue);
 				}
 			},
 			updateValue(event) {
@@ -78,84 +80,16 @@
 				const percent = (x / rect.width) * 100;
 				const stepDecimalPlaces = this.step.toString().split('.')[1]?.length || 0;
 		
-				if (percent >= 0 && percent <= 100) {
-
-					const rawValue = this.minValue + (percent / 100) * (this.maxValue - this.minValue);
+				if (percent < 0) {
+					this.localValue = this.min;
+				} else if (percent > 100) {
+					this.localValue = this.max;
+				} else {
+					const rawValue = this.min + (percent / 100) * (this.max - this.min);
 					this.localValue = parseFloat((Math.round(rawValue / this.step) * this.step).toFixed(stepDecimalPlaces));
 				}
 			},
 		},
 	};
 </script>
-  
-<style lang="scss" scoped>
-	.ui-range {
-		--uiRangeHeight: 0.625em;
-		--uiRangeDotWidth: 1em;
-		--uiRangeBorderWidth: 1px;
-		font-size: 1rem;
-		width: 100px;
-		.ui-range-body {
-			position: relative;
-			max-width: 100%;
-			height: var(--uiRangeHeight);
-		}
-		.ui-range-line {
-			position: absolute;
-			height: 100%;
-			top: 0;
-			border-radius: var(--uiRangeHeight);
-			overflow: hidden;
-			box-shadow: inset 0 0 0 1px var(--colorBorder);
-		}
-		.ui-range-progress {
-			height: 100%;
-			position: relative;
-			background: currentColor;
-		}
-		.ui-range-dot {
-			width: var(--uiRangeDotWidth);
-			height: var(--uiRangeDotWidth);
-			background-color: var(--colorPrimary);
-			border-radius: 50%;
-			position: absolute;
-			top: calc(0px - ((var(--uiRangeDotWidth) - var(--uiRangeHeight)) / 2));
-			translate: calc(-.5 * var(--uiRangeDotWidth));
-		}
-		&:has(.ui-range-dot) {
-			.ui-range-body {
-				margin-left: calc(.5 * var(--uiRangeDotWidth));
-				width: calc(100% - calc(1 * var(--uiRangeDotWidth)));
-			}
-			.ui-range-line {
-				width: calc(100% + var(--uiRangeDotWidth));
-				left: calc(-.5 * var(--uiRangeDotWidth));
-				padding-left: calc(.5 * var(--uiRangeDotWidth));
-				padding-right: calc(.5 * var(--uiRangeDotWidth));
-				.ui-range-progress {
-					color: var(--colorPrimaryDark);
-					&::before {
-						content: '';
-						position: absolute;
-						height: 100%;
-						width: var(--uiRangeDotWidth);
-						left: calc(-1 * var(--uiRangeDotWidth));
-						background: currentColor;
-					}
-				}
-			}
-		}
-		&:not(:has(.ui-range-dot)) {
-			.ui-range-body {
-				width: 100%;
-			}
-			.ui-range-line {
-				width: 100%;
-				.ui-range-progress {
-					color: var(--colorPrimary);
-				}
-			}
-		}
-	}
-</style>
   

@@ -26,11 +26,11 @@
 <script>
 	export default {
 		props: {
-			tabs: Array, // Массив объектов, представляющих ваши вкладки
+			tabs: Array,
 		},
 		data() {
 			return {
-				activeTabIndex: 0, // Индекс активной вкладки
+				activeTabIndex: 0,
 			};
 		},
 	};

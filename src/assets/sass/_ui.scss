@@ -1,7 +1,5 @@
-.ui-input-row {
-	display: flex;
-	.ui-input-box {
-		display: flex;
-		flex-direction: column;
-	}
-}
+@import "./UI/_input.scss";
+@import "./UI/_range.scss";
+@import "./UI/_select.scss";
+@import "./UI/_tab.scss";
+@import "./UI/_playerAudio.scss";

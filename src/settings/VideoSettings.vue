@@ -2,7 +2,18 @@
 	<div class="settings-item">
 		<div class="settings-item__label">Размер экрана:</div>
 		<div class="settings-item__option">
-			<ui-select :options="screenSizeOptions" :selectedValue="fullscreen ? 'fullscreen' : 'windowed'" @option-selected="toggleFullscreen" />
+			<ui-select :options="screenSizeOptions" :selectedValue="fullscreen ? 'fullscreen' : 'windowed'" @option-selected="toggleFullscreen">
+				<template v-slot:option="{ selectOption, isSelected, options }">
+					<div
+						v-for="(option, index) in options"
+						:key="index"
+						@click="selectOption(option)"
+						:class="{ 'ui-select-option': true, '__selected': isSelected(option) }"
+					>
+						{{ option.label }}
+					</div>
+				</template>
+			</ui-select>
 		</div>
 	</div>
 </template>
@@ -30,12 +41,10 @@
 		methods: {
 			toggleFullscreen(newMode) {
 				if (newMode === 'fullscreen') {
-					// Включить полноэкранный режим
 					appWindow.setFullscreen(true);
 					this.fullscreen = true;
 					this.$emit('set-fullscreen-data', this.fullscreen);
 				} else {
-					// Включить оконный режим
 					appWindow.setFullscreen(false);
 					this.fullscreen = false;
 					this.$emit('set-fullscreen-data', this.fullscreen);

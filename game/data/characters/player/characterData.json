@@ -1,0 +1,16 @@
+{	
+	"avatar": "noname",
+	"race": "human",
+	"gender": "man",
+	"age": 35,
+	"height": 175,
+	"weight": 75,
+	"freeStats": 5,
+	"stats": {
+		"strength": 20,
+		"agility": 20,
+		"intelligence": 20,
+		"endurance": 20,
+		"charisma": 20
+	}
+}
