@@ -91,9 +91,37 @@ fn create_folder(args: CreateFolderArgs) -> Result<(), String> {
     }
 }
 
+#[derive(serde::Deserialize)]
+struct CreateSaveFileArgs {
+    folder_path: String,
+    folder_name: String,
+    file_name: String,
+    file_info: serde_json::Value,
+    stats_data: serde_json::Value,
+}
+
+#[tauri::command]
+fn create_save_file(args: CreateSaveFileArgs) -> Result<(), String> {
+    let folder_path = Path::new(&args.folder_path).join(&args.folder_name);
+    let file_path = folder_path.join(&args.file_name);
+
+    let combined_data = serde_json::json!({
+        "fileInfo": args.file_info,
+        "playerData": args.stats_data
+    });
+
+    let combined_data_str = serde_json::to_string_pretty(&combined_data).map_err(|e| e.to_string())?;
+
+    if let Err(err) = std::fs::write(file_path, combined_data_str) {
+        return Err(err.to_string());
+    }
+
+    Ok(())
+}
+
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![list_files, save_to_file, list_folders, create_folder])
+        .invoke_handler(tauri::generate_handler![list_files, save_to_file, list_folders, create_folder, create_save_file])
         .run(tauri::generate_context!())
         .expect("failed to run app");
 }

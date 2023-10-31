@@ -32,10 +32,15 @@ const router = createRouter({
 			name: 'about',
 			path: '/about',
 			component: () => import('../views/AboutView.vue')
-		}
-		,
+		},
 		{
 			id: 5,
+			name: 'game',
+			path: '/game',
+			component: () => import('../views/Game.vue')
+		},
+		{
+			id: 6,
 			name: 'test',
 			path: '/test',
 			component: () => import('../views/Test.vue')

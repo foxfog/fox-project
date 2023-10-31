@@ -11,17 +11,17 @@
 					<div class="ui-input-row">
 						<div class="ui-input-box">
 							<label class="ui-input-label">Имя</label>
-							<input class="ui-input-text" type="text" required v-model="firstName"/>
+							<input class="ui-input-text" type="text" required v-model="playerData.firstName"/>
 						</div>
 						<div class="ui-input-box">
 							<label class="ui-input-label">Фамилия</label>
-							<input class="ui-input-text" type="text" required v-model="lastName"/>
+							<input class="ui-input-text" type="text" required v-model="playerData.lastName"/>
 						</div>
 					</div>
 					<div class="ui-input-row">
 						<div class="ui-input-box">
 							<label class="ui-input-label">Аватар</label>
-							<ui-select :options="avatarOptions" :selectedValue="avatarSelected" @option-selected="avatarSelect">
+							<ui-select :options="avatarOptions" :selectedValue="playerData.avatar" @option-selected="avatarSelect">
 								<template v-slot:option="{ selectOption, isSelected, options }">
 									<div
 										v-for="(option, index) in options"
@@ -36,7 +36,7 @@
 						</div>
 						<div class="ui-input-box">
 							<label class="ui-input-label">Раса</label>
-							<ui-select :options="raceOptions" :selectedValue="raceSelected" @option-selected="raceSelect">
+							<ui-select :options="raceOptions" :selectedValue="playerData.race" @option-selected="raceSelect">
 								<template v-slot:option="{ selectOption, isSelected, options }">
 									<div
 										v-for="(option, index) in options"
@@ -51,7 +51,7 @@
 						</div>
 						<div class="ui-input-box">
 							<label class="ui-input-label">Пол</label>
-							<ui-select :options="genderOptions" :selectedValue="genderSelected" @option-selected="genderSelect">
+							<ui-select :options="genderOptions" :selectedValue="playerData.gender" @option-selected="genderSelect">
 								<template v-slot:option="{ selectOption, isSelected, options }">
 									<div
 										v-for="(option, index) in options"
@@ -146,31 +146,53 @@
 				folderPath: '../game/saves',
 				folderNames: [],
 
-				firstName: "",
-      			lastName: "",
-
 				avatarOptions: [
-					{ value: 'noname', label: 'Чужак' },
-					{ value: 'old', label: 'Старичек' },
-					{ value: 'yang', label: 'Новичек' },
+					{
+						value: 'noname',
+						label: 'Чужак'
+					},
+					{
+						value: 'old',
+						label: 'Старичек'
+					},
+					{
+						value: 'yang',
+						label: 'Новичек'
+					},
 				],
-				avatarSelected: playerData.avatar,
 
 				raceOptions: [
-					{ value: 'human', label: 'Человек' },
-					{ value: 'elf', label: 'Эльф' },
-					{ value: 'orc', label: 'Орк' },
+					{
+						value: 'human',
+						label: 'Человек'
+					},
+					{
+						value: 'elf',
+						label: 'Эльф'
+					},
+					{
+						value: 'orc',
+						label: 'Орк'
+					},
 				],
-				raceSelected: playerData.race,
-				racesSelected: ['human', 'elf'],
 
 				genderOptions: [
-					{ value: 'man', label: 'мужской' },
-					{ value: 'woman', label: 'женский' },
+					{
+						value: 'man',
+						label: 'мужской'
+					},
+					{
+						value: 'woman',
+						label: 'женский'
+					},
 				],
-				genderSelected: playerData.gender,
 
 				playerData: {
+					firstName: '',
+					lastName: '',
+					avatar: playerData.avatar,
+					race: playerData.race,
+					gender: playerData.gender,
 					age: playerData.age,
 					height: playerData.height,
 					weight: playerData.weight,
@@ -187,13 +209,13 @@
 		},
 		methods: {
 			avatarSelect(newAvatar) {
-				this.avatarSelected = newAvatar;
+				this.playerData.avatar = newAvatar;
 			},
 			raceSelect(newRace) {
-				this.raceSelected = newRace;
+				this.playerData.race = newRace;
 			},
 			genderSelect(newGender) {
-				this.genderSelected = newGender;
+				this.playerData.gender = newGender;
 			},
 			watchStat(statName, newValue, oldValue) {
 				const diff = newValue - oldValue;
@@ -201,7 +223,7 @@
 				console.log(`Новое значение ${statName}:`, newValue);
 			},
 			isInputsValid() {
-				return this.firstName.trim() !== "" && this.lastName.trim() !== "";
+				return this.playerData.firstName.trim() !== "" && this.playerData.lastName.trim() !== "";
 			},
 			async startGame() {
 				try {
@@ -210,15 +232,33 @@
 					console.log("Folder Names:", this.folderNames);
 
 					const folderNumbers = this.folderNames
-					.filter(folderName => /^profile_\d+$/.test(folderName))
-					.map(folderName => parseInt(folderName.replace('profile_', ''), 10));
+						.filter(folderName => /^profile_\d+$/.test(folderName))
+						.map(folderName => parseInt(folderName.replace('profile_', ''), 10));
 
 					const maxNumber = Math.max(...folderNumbers, 0);
 
 					const nextProfileName = `profile_${maxNumber + 1}`;
 					console.log("New folder:", nextProfileName);
-					
+
 					await invoke('create_folder', { args: { folder_path: this.folderPath, folder_name: nextProfileName } });
+
+					const now = new Date();
+					const year = now.getFullYear();
+					const month = String(now.getMonth() + 1).padStart(2, '0');
+					const day = String(now.getDate()).padStart(2, '0');
+					const hours = String(now.getHours()).padStart(2, '0');
+					const minutes = String(now.getMinutes()).padStart(2, '0');
+					const seconds = String(now.getSeconds()).padStart(2, '0');
+					const timestamp = `save_0-${year}${month}${day}-${hours}${minutes}${seconds}.json`;
+
+					const fileInfo = {
+						saveTime: now.getTime(),
+					}
+
+					await invoke('create_save_file', { args: { folder_path: this.folderPath, folder_name: nextProfileName, file_name: timestamp, file_info: fileInfo, stats_data: this.playerData } });
+
+					this.$router.push({ name: 'game' });
+
 				} catch (error) {
 					console.error("Error fetching folder names:", error);
 				}
