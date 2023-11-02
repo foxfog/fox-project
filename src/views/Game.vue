@@ -1,147 +1,198 @@
 <template>
-  <div class="mainpage">
-    <div class="mainpage-content">
-      <div class="pagetitle">Начало игры</div>
-      <h1>{{ $t('about', {user: "Fox"}) }}</h1>
-      <h2>{{ $t('num_age', {user: "Fox", n: 10}) }}</h2>
-      <h3>Сейчас {{ $d(new Date(), "longFormat") }}</h3>
-	  <div class="map map1">
-			<div class="setka setka-z">
-				<div class="setka-row" v-for="y in range(-(rows - 1) / 2, (rows - 1) / 2)" :key="y" :position-y="y">
-				<div class="kvadrat" v-for="x in range(-(cols - 1) / 2, (cols - 1) / 2)" :key="x" :position-y="y" :position-x="x">
-					[{{ y }},{{ x }}]
-				</div>
-				</div>
+	<div class="gamepage">
+		<div class="uprav">
+			<div>
+				<label for="playerPositionX">X координата:</label>
+				<input id="playerPositionX" v-model="this.playerPositionX" type="number">
 			</div>
-			<div class="human" :style="{ left: leftOffset + 'px', top: topOffset + 'px' }"></div>
-	  </div>
-	  <div class="map map2">
-		<div class="setka">
-			<div class="setka-row" v-for="y in range(-(rows - 1) / 2, (rows - 1) / 2)" :key="y" :position-y="y">
-				<div class="kvadrat" v-for="x in range(-(cols - 1) / 2, (cols - 1) / 2)" :key="x" :position-y="y" :position-x="x">
-					[{{ y }},{{ x }}]
-					<div class="tile"></div>
-				</div>
+			<div>
+				<label for="playerPositionY">Y координата:</label>
+				<input id="playerPositionY" v-model="this.playerPositionY" type="number">
 			</div>
-			<div class="human" :style="{ left: leftOffset2 + 'px', top: topOffset2 + 'px' }"></div>
 		</div>
-	  </div>
-    </div>
-  </div>
+		<div class="map" ref="map" @mousedown="startDrag" @mouseup="stopDrag">
+			<div class="map-grid" :style="marginMap(rows)">
+				<div class="map-grid-row" v-for="y in range(-(rows - 1) / 2, (rows - 1) / 2)" :key="y" :y="y" :style="marginMapRow(y)">
+					<div class="tile earth" v-for="x in range(-(cols - 1) / 2, (cols - 1) / 2)" :key="x" :y="y" :x="x" :style="mapTileStyle(x)">
+						<div class="tile-cord">[{{ y }},{{ x }}]</div>
+						<div class="tile-back"></div>
+					</div>
+				</div>
+				<div class="charakter charakter-player"></div>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script>
+	export default {
+		data() {
+			return {
+				rows: 51,
+				cols: 51,
+				tileWidth: 200,
+				tileHeight: 100,
+				playerPositionY: 1,
+				playerPositionX: 1,
 
-export default {
-  data() {
-    return {
-	  rows: 5,
-      cols: 5,
-	  leftOffset: 0,
-      topOffset: 0,
-    };
-  },
-  mounted() {
-    this.calculateTilePosition();
-	this.calculateTilePosition2();
-  },
-  methods: {
-	calculateTilePosition() {
-      const mapElement = document.querySelector('.map1');
-      const tileElement = document.querySelector('.map1 .kvadrat[position-x="0"][position-y="0"]');
+				isDragging: false,
+				startX: 0,
+				startY: 0,
+				scrollLeft: 0,
+				scrollTop: 0,
+			};
+		},
+		mounted() {
+			this.movePlayerToTile();
+			this.centerMapOnPlayer();
+		},
+		watch: {
+			playerPositionX: 'movePlayerToTile',
+			playerPositionY: 'movePlayerToTile',
+		},
+		methods: {
+			movePlayerToTile() {
+				const player = document.querySelector('.charakter-player');
+				const tile = document.querySelector(`.tile[x="${this.playerPositionX}"][y="${this.playerPositionY}"]`);
 
-      if (mapElement && tileElement) {
-        const mapRect = mapElement.getBoundingClientRect();
-        const tileRect = tileElement.getBoundingClientRect();
-
-		const tileWidth = tileRect.width;
-        const tileHeight = tileRect.height;
-
-        // Вычислите отступы до центра квадрата
-        this.leftOffset = tileRect.left - mapRect.left + tileWidth / 2;
-        this.topOffset = tileRect.top - mapRect.top + tileHeight / 2;
-		
-
-		console.log('Left Offset (px):', this.leftOffset);
-        console.log('Top Offset (px):', this.topOffset);
-      }
-    },
-	calculateTilePosition2() {
-      const mapElement2 = document.querySelector('.map2');
-      const tileElement2 = document.querySelector('.map2 .kvadrat[position-x="1"][position-y="2"]');
-
-      if (mapElement2 && tileElement2) {
-        const mapRect2 = mapElement2.getBoundingClientRect();
-        const tileRect2 = tileElement2.getBoundingClientRect();
-
-        const tileWidth2 = tileRect2.width;
-        const tileHeight2 = tileRect2.height;
-
-        // Вычислите отступы до центра квадрата
-        this.leftOffset2 = tileRect2.left - mapRect2.left + tileWidth2 / 2;
-        this.topOffset2 = tileRect2.top - mapRect2.top + tileHeight2 / 2;
-
-		console.log('Left Offset (px):', this.leftOffset2);
-        console.log('Top Offset (px):', this.topOffset2);
-      }
-    },
-    range(start, end) {
-      return Array.from({ length: end - start + 1 }, (_, i) => start + i);
-    },
-  },
-};
+				if (player && tile) {
+					if (player.parentNode) {
+						player.parentNode.removeChild(player);
+					}
+					tile.appendChild(player);
+				}
+			},
+			centerMapOnPlayer() {
+				const map = this.$refs.map;
+				const player = document.querySelector('.charakter-player');
+				if (map && player) {
+					const mapRect = map.getBoundingClientRect();
+					const playerRect = player.getBoundingClientRect();
+					const scrollX = playerRect.left - mapRect.left - mapRect.width / 2 + playerRect.width / 2;
+					const scrollY = playerRect.top - mapRect.top - mapRect.height / 2 + playerRect.height / 2;
+					map.scrollLeft = scrollX;
+					map.scrollTop = scrollY;
+				}
+			},
+			marginMapRow(y) {
+				return {
+					marginLeft: this.tileWidth / 2 * -y + "px",
+					marginBottom: (-1 * ( ((this.tileHeight / 2) * (this.cols - 1)) - ((this.tileHeight / 4) * (this.cols - 3)))) + "px",
+				};
+			},
+			marginMap(y) {
+				return {
+					marginLeft: this.tileWidth / 4 * y + "px",
+					marginTop: (1 * ( ((this.tileHeight / 2) * (this.cols - 1)) - ((this.tileHeight / 4) * (this.cols - 3)))) + "px",
+				};
+			},
+			mapTileStyle(x) {
+				return {
+					marginTop: this.tileHeight / 2 * x + "px",
+					
+				};
+			},
+			range(start, end) {
+				return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+			},
+			startDrag(event) {
+				this.isDragging = true;
+				this.startX = event.pageX;
+				this.startY = event.pageY;
+				this.scrollLeft = this.$refs.map.scrollLeft;
+				this.scrollTop = this.$refs.map.scrollTop;
+				this.$refs.map.addEventListener("mousemove", this.handleDrag);
+			},
+			handleDrag(event) {
+				if (this.isDragging) {
+					this.$refs.map.scrollLeft = this.scrollLeft + this.startX - event.pageX;
+					this.$refs.map.scrollTop = this.scrollTop + this.startY - event.pageY;
+				}
+			},
+			stopDrag() {
+				this.isDragging = false;
+				this.$refs.map.removeEventListener("mousemove", this.handleDrag);
+			}
+		},
+	};
 </script>
 
-<style>
-.map {
-	position: relative;
-}
-.setka {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 20px;
-  width: fit-content;
-}
-.setka-z {
-	transform: rotateX(60deg) rotateZ(45deg);
-}
-.setka-z .kvadrat {
-	width: 100px;
-  height: 100px;
-	border: 1px solid;
-	background: red;
-}
-.setka-row {
-  display: flex;
-}
-.kvadrat {
-  width: 200px;
-  height: 100px;
-  
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-.tile {
-	width: 100%;
-	height: 200%;
-	border: 1px solid;
-	background: red;
-	position: absolute;
-	z-index: -1;
-	transform: rotateX(60deg) rotateZ(45deg);
-	scale: 0.7111;
-}
-.human {
-	width: 30px;
-    height: 90px;
-    background: green;
-    z-index: 3;
-    position: absolute;
-    top: 0;
-    left: 0;
-    transform: translateX(-50%) translateY(-100%);
-}
+<style lang="scss">
+	.uprav {
+		position: absolute;
+		z-index: 99;
+	}
+	.gamepage {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+	.map {
+		margin: auto;
+		width: 100%;
+		height: 100%;
+		position: relative;
+		overflow: auto;
+		background: rgb(160 108 64);
+	}
+	.map-grid {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		width: fit-content;
+	}
+	.map-grid-row {
+		display: flex;
+	}
+	.tile {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		position: relative;
+		width: 200px;
+    	height: 100px;
+		margin-right: -100px;
+		.tile-cord {
+			position: relative;
+			z-index: 2;
+			opacity: 0;
+		}
+		.tile-back {
+			position: absolute;
+			width: 100%;
+			height: 110%;
+			z-index: 1;
+		}
+		.kvadrat {
+			width: 100%;
+			height: 200%;
+			border: 1px solid;
+			position: absolute;
+			z-index: 1;
+			transform: rotateX(60deg) rotateZ(45deg);
+			scale: 0.7111;
+			opacity: 0;
+		}
+		&.earth {
+			.tile-back {
+				background-image: url(../game/images/tiles/tile-earth.webp);
+			}
+		}
+	}
+	.charakter {
+		width: 30px;
+		height: 90px;
+		background: green;
+		z-index: 3;
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		margin: auto;
+		transform-origin: center bottom;
+		translate: 0 -50%;
+	}
 </style>
